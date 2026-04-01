@@ -1,11 +1,10 @@
-import { Geist_Mono, Manrope } from "next/font/google"
+import { Geist, Geist_Mono, Manrope } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { AppShell } from "@/components/layout/app-shell"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
+const manrope = Manrope({subsets:['latin'],variable:'--font-sans'})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -24,9 +23,7 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", manrope.variable)}
     >
       <body>
-        <ThemeProvider>
-          <AppShell>{children}</AppShell>
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   )
