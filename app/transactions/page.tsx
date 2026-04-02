@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
-import { Plus } from "lucide-react"
+import { ChevronDown, LayoutDashboard, Plus, SlidersHorizontal } from "lucide-react"
 
 import { EmptyState } from "@/components/EmptyState"
 import { Header } from "@/components/layout/header"
@@ -33,6 +33,7 @@ export default function TransactionsPage() {
   const [deletingTransaction, setDeletingTransaction] = useState<Transaction | null>(null)
   const [removingId, setRemovingId] = useState<string | null>(null)
   const [undoTransaction, setUndoTransaction] = useState<Transaction | null>(null)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const filterSignature = useMemo(
@@ -136,33 +137,68 @@ export default function TransactionsPage() {
 
           <main className="space-y-4 px-4 pt-1 pb-28 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
             <section className="space-y-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <CardTitle className="text-xl">Manage Transactions</CardTitle>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Shortcuts: <kbd className="rounded border px-1.5 py-0.5">A</kbd> add,
-                    <kbd className="ml-1 rounded border px-1.5 py-0.5">/</kbd> search,
-                    <kbd className="ml-1 rounded border px-1.5 py-0.5">F</kbd> first filter
-                  </p>
-                </div>
-                {isAdmin ? (
-                  <Button
-                    size="sm"
-                    className="hidden bg-emerald-600 hover:bg-emerald-700 lg:inline-flex"
-                    onClick={() => {
-                      setEditingTransaction(null)
-                      setTransactionModalOpen(true)
-                    }}
-                  >
-                    <Plus className="size-4" /> Add Transaction
-                  </Button>
-                ) : null}
-              </div>
+              <div className="rounded-4xl border border-border/70 bg-card/70 p-3.5 sm:p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-xl">Manage Transactions</CardTitle>
+                    <p className="mt-1 hidden text-xs text-muted-foreground sm:block">
+                      Shortcuts: <kbd className="rounded border px-1.5 py-0.5">A</kbd> add,
+                      <kbd className="ml-1 rounded border px-1.5 py-0.5">/</kbd> search,
+                      <kbd className="ml-1 rounded border px-1.5 py-0.5">F</kbd> first filter
+                    </p>
+                  </div>
 
-              <TransactionFilters
-                canExport={filteredTransactions.length > 0}
-                onExportCsv={exportCsv}
-              />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="inline-flex sm:hidden"
+                    aria-expanded={filtersOpen}
+                    aria-controls="tx-filters-panel"
+                    onClick={() => setFiltersOpen((prev) => !prev)}
+                  >
+                    <SlidersHorizontal className="size-4" /> Filters
+                    <ChevronDown
+                      className={`size-4 transition-transform duration-200 ${filtersOpen ? "rotate-180" : ""}`}
+                    />
+                  </Button>
+
+                  {isAdmin ? (
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      className="inline-flex bg-emerald-600 hover:bg-emerald-700 sm:hidden"
+                      aria-label="Add transaction"
+                      onClick={() => {
+                        setEditingTransaction(null)
+                        setTransactionModalOpen(true)
+                      }}
+                    >
+                      <Plus className="size-4" />
+                    </Button>
+                  ) : null}
+
+                  {isAdmin ? (
+                    <Button
+                      size="sm"
+                      className="hidden bg-emerald-600 hover:bg-emerald-700 sm:inline-flex"
+                      onClick={() => {
+                        setEditingTransaction(null)
+                        setTransactionModalOpen(true)
+                      }}
+                    >
+                      <Plus className="size-4" /> Add Transaction
+                    </Button>
+                  ) : null}
+                </div>
+
+                <div id="tx-filters-panel" className={filtersOpen ? "mt-3 block sm:mt-4" : "mt-3 hidden sm:mt-4 sm:block"}>
+                  <TransactionFilters
+                    canExport={filteredTransactions.length > 0}
+                    onExportCsv={exportCsv}
+                  />
+                </div>
+              </div>
 
               {!transactions.length ? (
                 <EmptyState
@@ -191,28 +227,18 @@ export default function TransactionsPage() {
             </section>
           </main>
 
-          <div className="fixed right-4 bottom-24 z-30 lg:hidden">
-            {isAdmin ? (
-              <Button
-                size="lg"
-                className="rounded-full bg-emerald-600 px-6 shadow-lg shadow-emerald-950/25 hover:bg-emerald-700"
-                onClick={() => {
-                  setEditingTransaction(null)
-                  setTransactionModalOpen(true)
-                }}
+          <nav className="fixed right-3 bottom-3 left-3 z-20 rounded-4xl border border-border/70 bg-card/92 p-1.5 shadow-lg shadow-emerald-950/10 backdrop-blur supports-[padding:max(0px)]:pb-[max(0.4rem,env(safe-area-inset-bottom))] lg:hidden">
+            <div className="grid grid-cols-2 gap-1.5">
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center gap-2 rounded-3xl px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
               >
-                <Plus className="size-4" /> Add Transaction
-              </Button>
-            ) : null}
-          </div>
-
-          <nav className="fixed right-4 bottom-4 left-4 z-20 grid grid-cols-2 rounded-4xl border border-border/70 bg-card/90 p-2 shadow-sm backdrop-blur supports-[padding:max(0px)]:pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden">
-            <Link href="/" className="rounded-3xl px-3 py-2 text-center text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60">
-              Dashboard
-            </Link>
-            <span className="rounded-3xl bg-emerald-500/10 px-3 py-2 text-center text-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60">
-              Transactions
-            </span>
+                <LayoutDashboard className="size-4" /> Dashboard
+              </Link>
+              <span className="inline-flex items-center justify-center gap-2 rounded-3xl bg-emerald-500/15 px-3 py-2 text-sm font-semibold text-foreground">
+                <SlidersHorizontal className="size-4" /> Transactions
+              </span>
+            </div>
           </nav>
         </div>
       </div>

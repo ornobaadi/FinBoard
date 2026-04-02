@@ -7,6 +7,8 @@ import {
   BanknoteArrowDown,
   BanknoteArrowUp,
   CircleDollarSign,
+  LayoutDashboard,
+  SlidersHorizontal,
 } from "lucide-react"
 
 import { CategoryChart } from "@/components/dashboard/CategoryChart"
@@ -137,13 +139,21 @@ export default function Page() {
             </section>
           </main>
 
-          <nav className="fixed right-4 bottom-4 left-4 z-20 grid grid-cols-2 rounded-4xl border border-border/70 bg-card/90 p-2 shadow-sm backdrop-blur supports-[padding:max(0px)]:pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden">
-            <a href="#overview" className="rounded-3xl bg-emerald-500/10 px-3 py-2 text-center text-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60">
-              Dashboard
-            </a>
-            <Link href="/transactions" className="rounded-3xl px-3 py-2 text-center text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60">
-              Transactions
-            </Link>
+          <nav className="fixed right-3 bottom-3 left-3 z-20 rounded-4xl border border-border/70 bg-card/92 p-1.5 shadow-lg shadow-emerald-950/10 backdrop-blur supports-[padding:max(0px)]:pb-[max(0.4rem,env(safe-area-inset-bottom))] lg:hidden">
+            <div className="grid grid-cols-2 gap-1.5">
+              <a
+                href="#overview"
+                className="inline-flex items-center justify-center gap-2 rounded-3xl bg-emerald-500/15 px-3 py-2 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
+              >
+                <LayoutDashboard className="size-4" /> Dashboard
+              </a>
+              <Link
+                href="/transactions"
+                className="inline-flex items-center justify-center gap-2 rounded-3xl px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
+              >
+                <SlidersHorizontal className="size-4" /> Transactions
+              </Link>
+            </div>
           </nav>
         </div>
       </div>
