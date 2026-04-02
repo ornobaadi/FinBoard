@@ -3,6 +3,7 @@
 import { X } from "lucide-react"
 
 import { categories } from "@/data/categories"
+import { DateFilterPicker } from "@/components/transactions/DateFilterPicker"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -202,28 +203,28 @@ export function TransactionFilters({ onExportCsv, canExport = false }: Transacti
         </SelectContent>
       </Select>
 
-      <Input
-        type="date"
-        name="fromDate"
-        autoComplete="off"
-        aria-label="Filter from date"
-        value={filters.dateRange.from ?? ""}
-        onChange={(event) =>
-          setFilter("dateRange", { ...filters.dateRange, from: event.target.value || null })
+      <DateFilterPicker
+        value={filters.dateRange.from}
+        maxDate={filters.dateRange.to}
+        placeholder="From date"
+        onChange={(value) =>
+          setFilter("dateRange", {
+            ...filters.dateRange,
+            from: value,
+          })
         }
-        className="bg-background"
       />
 
-      <Input
-        type="date"
-        name="toDate"
-        autoComplete="off"
-        aria-label="Filter to date"
-        value={filters.dateRange.to ?? ""}
-        onChange={(event) =>
-          setFilter("dateRange", { ...filters.dateRange, to: event.target.value || null })
+      <DateFilterPicker
+        value={filters.dateRange.to}
+        minDate={filters.dateRange.from}
+        placeholder="To date"
+        onChange={(value) =>
+          setFilter("dateRange", {
+            ...filters.dateRange,
+            to: value,
+          })
         }
-        className="bg-background"
       />
 
       <Button variant="outline" onClick={clearFilters} className="w-full lg:w-auto">
