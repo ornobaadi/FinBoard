@@ -1,17 +1,109 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import Link from "next/link"
+import { useMemo } from "react"
+import {
+  ArrowRightLeft,
+  BanknoteArrowDown,
+  BanknoteArrowUp,
+  CircleDollarSign,
+} from "lucide-react"
+
+import { CategoryChart } from "@/components/dashboard/CategoryChart"
+import { InsightsPanel } from "@/components/dashboard/InsightsPanel"
+import { MonthlyTrendChart } from "@/components/dashboard/MonthlyTrendChart"
+import { RecentTransactions } from "@/components/dashboard/RecentTransactions"
+import { SummaryCard } from "@/components/dashboard/SummaryCard"
+import { Header } from "@/components/layout/header"
+import { Sidebar } from "@/components/layout/sidebar"
+import { useDashboardStats } from "@/store/useAppStore"
 
 export default function Page() {
+  const stats = useDashboardStats()
+
+  const summaryCards = useMemo(
+    () => [
+      {
+        title: "Total Income",
+        value: stats.totals.income,
+        changePercent: stats.comparison.income,
+        icon: BanknoteArrowUp,
+      },
+      {
+        title: "Total Expenses",
+        value: stats.totals.expense,
+        changePercent: stats.comparison.expense,
+        icon: BanknoteArrowDown,
+      },
+      {
+        title: "Net Balance",
+        value: stats.totals.net,
+        changePercent: stats.comparison.net,
+        icon: CircleDollarSign,
+      },
+      {
+        title: "Transactions",
+        value: stats.totals.transactions,
+        isCurrency: false,
+        changePercent: stats.comparison.transactions,
+        icon: ArrowRightLeft,
+      },
+    ],
+    [stats]
+  )
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
+    <div className="relative min-h-dvh bg-gradient-to-br from-emerald-50/80 via-background to-cyan-50/40 dark:from-emerald-950/30 dark:via-background dark:to-cyan-950/20">
+      <div className="pointer-events-none absolute inset-0 opacity-60 [background:radial-gradient(circle_at_20%_10%,rgba(16,185,129,0.12),transparent_35%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.1),transparent_30%),radial-gradient(circle_at_30%_90%,rgba(6,182,212,0.08),transparent_25%)]" />
+
+      <div className="relative flex min-h-dvh">
+        <Sidebar />
+
+        <div className="min-w-0 flex-1">
+          <Header eyebrow="Dashboard" title="Finance Command Center" />
+
+          <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-6">
+            <section id="overview" className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
+              {summaryCards.map((card, index) => (
+                <div key={card.title} className={`fx-rise ${index > 0 ? `fx-rise-delay-${Math.min(index, 3)}` : ""}`}>
+                  <SummaryCard {...card} />
+                </div>
+              ))}
+            </section>
+
+            <section className="grid gap-3.5 xl:grid-cols-[1.25fr_1fr] xl:gap-4">
+              <div className="space-y-3.5">
+                <InsightsPanel
+                  topCategory={stats.insights.topCategory}
+                  expenseChangePercent={stats.insights.expenseChangePercent}
+                  incomeExpenseRatio={stats.insights.incomeExpenseRatio}
+                />
+              </div>
+
+              <div className="space-y-3.5">
+                <CategoryChart data={stats.insights.categoryBreakdown} />
+              </div>
+            </section>
+
+            <section className="grid gap-3.5 xl:grid-cols-[1.25fr_1fr] xl:gap-4">
+              <div className="space-y-3.5">
+                <MonthlyTrendChart data={stats.insights.monthlyTrend} />
+              </div>
+
+              <div className="space-y-3.5">
+                <RecentTransactions data={stats.recentTransactions} />
+              </div>
+            </section>
+          </main>
+
+          <nav className="fixed right-4 bottom-4 left-4 z-20 grid grid-cols-2 rounded-4xl border border-border/70 bg-card/90 p-2 shadow-sm backdrop-blur supports-[padding:max(0px)]:pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden">
+            <a href="#overview" className="rounded-3xl bg-emerald-500/10 px-3 py-2 text-center text-sm font-medium text-foreground">
+              Dashboard
+            </a>
+            <Link href="/transactions" className="rounded-3xl px-3 py-2 text-center text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground">
+              Transactions
+            </Link>
+          </nav>
         </div>
       </div>
     </div>
