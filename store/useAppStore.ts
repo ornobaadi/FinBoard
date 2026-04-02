@@ -13,6 +13,7 @@ interface AppState {
   filters: Filters
   setRole: (role: Role) => void
   setFilter: <K extends keyof Filters>(key: K, value: Filters[K]) => void
+  setFilters: (updates: Partial<Filters>) => void
   clearFilters: () => void
   addTransaction: (tx: Omit<Transaction, "id">) => void
   updateTransaction: (id: string, updates: Partial<Transaction>) => void
@@ -22,8 +23,12 @@ interface AppState {
 const defaultFilters: Filters = {
   search: "",
   type: "all",
+  status: "all",
   category: "all",
   dateRange: { from: null, to: null },
+  amountRange: { min: null, max: null },
+  sortBy: "date",
+  sortDirection: "desc",
 }
 
 function createTransactionId(items: Transaction[]) {
@@ -42,6 +47,13 @@ export const useAppStore = create<AppState>()(
           filters: {
             ...state.filters,
             [key]: value,
+          },
+        })),
+      setFilters: (updates) =>
+        set((state) => ({
+          filters: {
+            ...state.filters,
+            ...updates,
           },
         })),
       clearFilters: () => set({ filters: defaultFilters }),
@@ -91,6 +103,10 @@ export function useFilteredTransactions() {
         return false
       }
 
+      if (filters.status !== "all" && tx.status !== filters.status) {
+        return false
+      }
+
       if (filters.category !== "all" && tx.category !== filters.category) {
         return false
       }
@@ -103,9 +119,29 @@ export function useFilteredTransactions() {
         return false
       }
 
+      if (filters.amountRange.min !== null && tx.amount < filters.amountRange.min) {
+        return false
+      }
+
+      if (filters.amountRange.max !== null && tx.amount > filters.amountRange.max) {
+        return false
+      }
+
       return true
     })
-    .sort((a, b) => b.date.localeCompare(a.date))
+    .sort((a, b) => {
+      const direction = filters.sortDirection === "asc" ? 1 : -1
+
+      if (filters.sortBy === "amount") {
+        return (a.amount - b.amount) * direction
+      }
+
+      if (filters.sortBy === "status") {
+        return a.status.localeCompare(b.status) * direction
+      }
+
+      return a.date.localeCompare(b.date) * direction
+    })
 }
 
 export function useDashboardStats() {

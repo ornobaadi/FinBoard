@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Pencil, Trash2 } from "lucide-react"
+import { ArrowDownAZ, ArrowUpAZ, ArrowUpDown, Pencil, Trash2 } from "lucide-react"
 
 import { CategoryBadge } from "@/components/CategoryBadge"
 import { EmptyState } from "@/components/EmptyState"
@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { formatCurrency, formatDate } from "@/lib/utils"
+import { useAppStore } from "@/store/useAppStore"
 import { Transaction } from "@/types"
 
 interface TransactionTableProps {
@@ -41,6 +42,8 @@ export function TransactionTable({
   removingId = null,
 }: TransactionTableProps) {
   const [page, setPage] = useState(1)
+  const filters = useAppStore((state) => state.filters)
+  const setFilters = useAppStore((state) => state.setFilters)
 
   const totalPages = Math.max(1, Math.ceil(data.length / PAGE_SIZE))
 
@@ -48,6 +51,29 @@ export function TransactionTable({
     const start = (page - 1) * PAGE_SIZE
     return data.slice(start, start + PAGE_SIZE)
   }, [data, page])
+
+  const sortIcon = (field: "date" | "amount" | "status") => {
+    if (filters.sortBy !== field) {
+      return <ArrowUpDown className="size-3.5 text-muted-foreground" />
+    }
+
+    return filters.sortDirection === "asc" ? (
+      <ArrowUpAZ className="size-3.5 text-foreground" />
+    ) : (
+      <ArrowDownAZ className="size-3.5 text-foreground" />
+    )
+  }
+
+  const toggleSort = (field: "date" | "amount" | "status") => {
+    if (filters.sortBy === field) {
+      setFilters({
+        sortDirection: filters.sortDirection === "asc" ? "desc" : "asc",
+      })
+      return
+    }
+
+    setFilters({ sortBy: field, sortDirection: "desc" })
+  }
 
   if (!data.length) {
     return (
@@ -67,19 +93,46 @@ export function TransactionTable({
       </CardHeader>
       <CardContent
         className={
-          "space-y-3.5 pt-3.5 pb-4 transition-opacity duration-200 " +
+          "space-y-3.5 pt-3.5 pb-4 transition-opacity duration-200 motion-reduce:transition-none " +
           (isFiltering ? "opacity-75" : "opacity-100")
         }
       >
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Date</TableHead>
+              <TableHead>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
+                  onClick={() => toggleSort("date")}
+                  aria-label="Sort by date"
+                >
+                  Date {sortIcon("date")}
+                </button>
+              </TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
+                  onClick={() => toggleSort("amount")}
+                  aria-label="Sort by amount"
+                >
+                  Amount {sortIcon("amount")}
+                </button>
+              </TableHead>
+              <TableHead>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
+                  onClick={() => toggleSort("status")}
+                  aria-label="Sort by status"
+                >
+                  Status {sortIcon("status")}
+                </button>
+              </TableHead>
               {isAdmin ? <TableHead className="text-right">Actions</TableHead> : null}
             </TableRow>
           </TableHeader>
@@ -88,7 +141,7 @@ export function TransactionTable({
               <TableRow
                 key={tx.id}
                 className={
-                  "transition-all duration-200 " +
+                  "transition-all duration-200 motion-reduce:transition-none " +
                   (removingId === tx.id ? "scale-[0.98] opacity-0" : "opacity-100")
                 }
               >

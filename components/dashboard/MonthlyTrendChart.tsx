@@ -55,6 +55,7 @@ interface MonthlyTrendChartProps {
 }
 
 export function MonthlyTrendChart({ data, narrative, anomaly }: MonthlyTrendChartProps) {
+  const hasData = data.length > 0
   const anomalyY = anomaly
     ? data.find((row) => row.month === anomaly.monthLabel)?.expense ?? null
     : null
@@ -66,31 +67,37 @@ export function MonthlyTrendChart({ data, narrative, anomaly }: MonthlyTrendChar
       </CardHeader>
       <CardContent className="space-y-2.5 pt-1 pb-4">
         <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} barSize={18}>
-            <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.24} vertical={false} />
-            <XAxis dataKey="month" tickLine={false} axisLine={false} />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(value: number) => `${Math.round(value / 1000)}k`}
-            />
-            <Tooltip content={<TrendTooltip />} />
-            <Legend />
-            <Bar dataKey="income" name="Income" fill="#1D9B6B" radius={[8, 8, 0, 0]} />
-            <Bar dataKey="expense" name="Expense" fill="#A8B3AE" radius={[8, 8, 0, 0]} />
-            {anomaly && anomalyY ? (
-              <ReferenceDot
-                x={anomaly.monthLabel}
-                y={anomalyY}
-                r={5}
-                fill="#e11d48"
-                stroke="#881337"
-                strokeWidth={2}
-              />
-            ) : null}
-          </BarChart>
-        </ResponsiveContainer>
+          {hasData ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} barSize={18}>
+                <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.24} vertical={false} />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value: number) => `${Math.round(value / 1000)}k`}
+                />
+                <Tooltip content={<TrendTooltip />} />
+                <Legend />
+                <Bar dataKey="income" name="Income" fill="#1D9B6B" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="expense" name="Expense" fill="#A8B3AE" radius={[8, 8, 0, 0]} />
+                {anomaly && anomalyY ? (
+                  <ReferenceDot
+                    x={anomaly.monthLabel}
+                    y={anomalyY}
+                    r={5}
+                    fill="#e11d48"
+                    stroke="#881337"
+                    strokeWidth={2}
+                  />
+                ) : null}
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex h-full items-center justify-center rounded-3xl border border-dashed border-border/70 bg-background/40 px-4 text-center text-sm text-muted-foreground">
+              No month-over-month data yet. Add transactions to unlock trend tracking.
+            </div>
+          )}
         </div>
 
         <p className="rounded-3xl border border-dashed border-border/70 bg-background/50 px-3 py-2 text-xs leading-relaxed text-muted-foreground">

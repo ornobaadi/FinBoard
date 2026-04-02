@@ -12,9 +12,26 @@ export function useAnimatedNumber(
 ) {
   const { duration = 600 } = options
   const [animatedValue, setAnimatedValue] = useState(value)
+  const [reduceMotion, setReduceMotion] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false
+  )
   const previousValueRef = useRef(value)
 
   useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const onChange = () => setReduceMotion(media.matches)
+    media.addEventListener("change", onChange)
+    return () => media.removeEventListener("change", onChange)
+  }, [])
+
+  useEffect(() => {
+    if (reduceMotion) {
+      previousValueRef.current = value
+      return
+    }
+
     const from = previousValueRef.current
     const to = value
 
@@ -41,7 +58,7 @@ export function useAnimatedNumber(
     previousValueRef.current = to
 
     return () => cancelAnimationFrame(frameId)
-  }, [duration, value])
+  }, [duration, reduceMotion, value])
 
-  return animatedValue
+  return reduceMotion ? value : animatedValue
 }

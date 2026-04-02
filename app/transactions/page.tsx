@@ -42,6 +42,41 @@ export default function TransactionsPage() {
   const deferredFilterSignature = useDeferredValue(filterSignature)
   const isFiltering = deferredFilterSignature !== filterSignature
 
+  const exportCsv = () => {
+    if (!filteredTransactions.length) {
+      return
+    }
+
+    const header = ["date", "description", "category", "type", "status", "amount"]
+    const escapeCell = (value: string | number) => {
+      const raw = String(value)
+      if (raw.includes(",") || raw.includes('"') || raw.includes("\n")) {
+        return `"${raw.replaceAll('"', '""')}"`
+      }
+      return raw
+    }
+
+    const rows = filteredTransactions.map((tx) => [
+      tx.date,
+      tx.description,
+      tx.category,
+      tx.type,
+      tx.status,
+      tx.amount,
+    ])
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => escapeCell(cell)).join(","))
+      .join("\n")
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "finboard-transactions.csv"
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   useEffect(() => {
     return () => {
       if (undoTimerRef.current) {
@@ -49,6 +84,45 @@ export default function TransactionsPage() {
       }
     }
   }, [])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return
+      }
+
+      const target = event.target as HTMLElement | null
+      const isTypingTarget =
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.tagName === "SELECT" ||
+        target?.isContentEditable
+
+      if (!isTypingTarget && event.key.toLowerCase() === "f") {
+        event.preventDefault()
+        document.getElementById("tx-type-filter")?.focus()
+      }
+
+      if (event.key === "/") {
+        event.preventDefault()
+        document.getElementById("tx-search-input")?.focus()
+      }
+
+      if (
+        !isTypingTarget &&
+        isAdmin &&
+        event.key.toLowerCase() === "a" &&
+        !transactionModalOpen
+      ) {
+        event.preventDefault()
+        setEditingTransaction(null)
+        setTransactionModalOpen(true)
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [isAdmin, transactionModalOpen])
 
   return (
     <div className="relative min-h-dvh bg-linear-to-br from-emerald-50/80 via-background to-cyan-50/40 dark:from-emerald-950/30 dark:via-background dark:to-cyan-950/20">
@@ -63,7 +137,14 @@ export default function TransactionsPage() {
           <main className="space-y-4 px-4 pt-1 pb-28 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
             <section className="space-y-4">
               <div className="flex items-center justify-between gap-3">
-                <CardTitle className="text-xl">Manage Transactions</CardTitle>
+                <div>
+                  <CardTitle className="text-xl">Manage Transactions</CardTitle>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Shortcuts: <kbd className="rounded border px-1.5 py-0.5">A</kbd> add,
+                    <kbd className="ml-1 rounded border px-1.5 py-0.5">/</kbd> search,
+                    <kbd className="ml-1 rounded border px-1.5 py-0.5">F</kbd> first filter
+                  </p>
+                </div>
                 {isAdmin ? (
                   <Button
                     size="sm"
@@ -78,7 +159,10 @@ export default function TransactionsPage() {
                 ) : null}
               </div>
 
-              <TransactionFilters />
+              <TransactionFilters
+                canExport={filteredTransactions.length > 0}
+                onExportCsv={exportCsv}
+              />
 
               {!transactions.length ? (
                 <EmptyState
@@ -181,7 +265,10 @@ export default function TransactionsPage() {
       />
 
       {undoTransaction ? (
-        <div className="fixed right-4 bottom-20 z-40 flex items-center gap-3 rounded-3xl border border-border/80 bg-card px-4 py-3 shadow-lg lg:right-8 lg:bottom-8">
+        <div
+          className="fixed right-4 bottom-20 z-40 flex items-center gap-3 rounded-3xl border border-border/80 bg-card px-4 py-3 shadow-lg lg:right-8 lg:bottom-8"
+          aria-live="polite"
+        >
           <p className="text-sm text-foreground">Transaction deleted</p>
           <Button
             size="sm"

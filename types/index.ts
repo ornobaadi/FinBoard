@@ -21,8 +21,15 @@ export interface DateRange {
 export interface Filters {
   search: string
   type: "all" | TransactionType
+  status: "all" | TransactionStatus
   category: string
   dateRange: DateRange
+  amountRange: {
+    min: number | null
+    max: number | null
+  }
+  sortBy: "date" | "amount" | "status"
+  sortDirection: "asc" | "desc"
 }
 
 export interface MonthlyStat {

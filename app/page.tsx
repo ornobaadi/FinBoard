@@ -81,7 +81,10 @@ export default function Page() {
           <Header eyebrow="Dashboard" title="Finance Command Center" />
 
           <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
-            <section id="overview" className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
+            <section
+              id="overview"
+              className="scroll-mt-24 grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4"
+            >
               {summaryCards.map((card, index) => (
                 <div
                   key={card.title}
