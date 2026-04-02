@@ -36,7 +36,7 @@ export function DemoControls({ compact = false }: DemoControlsProps) {
         value={scenario}
         onValueChange={(value) => loadScenario(value as DemoScenarioKey)}
       >
-        <SelectTrigger className="w-[156px] bg-card" aria-label="Select demo scenario">
+        <SelectTrigger className="w-full min-w-0 bg-card sm:w-39" aria-label="Select demo scenario">
           <SelectValue placeholder="Scenario">{selectedScenarioLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
@@ -56,7 +56,7 @@ export function DemoControls({ compact = false }: DemoControlsProps) {
         value={scenario}
         onValueChange={(value) => loadScenario(value as DemoScenarioKey)}
       >
-        <SelectTrigger className="h-8 min-w-[150px] bg-background" aria-label="Select demo scenario">
+        <SelectTrigger className="h-8 min-w-37.5 bg-background" aria-label="Select demo scenario">
           <SelectValue placeholder="Scenario">{selectedScenarioLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>

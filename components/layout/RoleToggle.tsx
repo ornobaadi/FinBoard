@@ -18,7 +18,7 @@ export function RoleToggle() {
 
   return (
     <Select value={role} onValueChange={(value) => setRole(value as "viewer" | "admin")}>
-      <SelectTrigger className="w-[156px] bg-card" aria-label="Select user role">
+      <SelectTrigger className="w-full min-w-0 bg-card sm:w-39" aria-label="Select user role">
         <SelectValue placeholder="Role">{roleLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>

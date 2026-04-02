@@ -43,8 +43,8 @@ export function Header({
           <h2 className="font-heading text-2xl font-semibold">{title}</h2>
         </div>
 
-        <div className="flex w-full items-center justify-end gap-2 overflow-x-auto sm:w-auto sm:gap-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {controls ? <div className="shrink-0">{controls}</div> : null}
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap sm:justify-end sm:gap-2.5">
+          {controls ? <div className="min-w-0 flex-1 sm:flex-none">{controls}</div> : null}
 
           {hasSearch ? (
             <Button
@@ -77,7 +77,7 @@ export function Header({
           <Button variant="outline" size="icon-sm" className="shrink-0" aria-label="Notifications">
             <Bell className="size-4" />
           </Button>
-          <div className="shrink-0">
+          <div className="w-33 sm:w-auto">
             <RoleToggle />
           </div>
         </div>

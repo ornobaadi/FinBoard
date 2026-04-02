@@ -25,16 +25,20 @@ export function RecentTransactions({ data }: RecentTransactionsProps) {
         {data.length ? data.map((tx) => (
           <div
             key={tx.id}
-            className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-border/70 bg-background/80 px-4 py-3"
+            className="rounded-3xl border border-border/70 bg-background/80 px-3.5 py-3 sm:px-4"
           >
-            <div>
-              <p className="font-medium">{tx.description}</p>
-              <p className="text-xs text-muted-foreground">{formatDate(tx.date)}</p>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate font-medium sm:whitespace-normal">{tx.description}</p>
+                <p className="text-xs text-muted-foreground">{formatDate(tx.date)}</p>
+              </div>
+              <p className="shrink-0 min-w-20 text-right text-lg font-semibold tabular-nums sm:min-w-28">
+                {formatCurrency(tx.amount)}
+              </p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <CategoryBadge category={tx.category} />
               <StatusBadge status={tx.status} />
-              <p className="min-w-28 text-right font-semibold tabular-nums">{formatCurrency(tx.amount)}</p>
             </div>
           </div>
         )) : (
