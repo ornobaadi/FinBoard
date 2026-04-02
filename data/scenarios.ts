@@ -11,7 +11,15 @@ const overspending = cloneTransactions(seedTransactions).map((tx) => {
   if (tx.type === "expense") {
     return {
       ...tx,
-      amount: Math.round(tx.amount * 1.35),
+      amount: Math.round(tx.amount * 2.35),
+      status: "pending" as const,
+    }
+  }
+
+  if (tx.type === "income") {
+    return {
+      ...tx,
+      amount: Math.round(tx.amount * 0.72),
     }
   }
 
@@ -22,14 +30,16 @@ const highSavings = cloneTransactions(seedTransactions).map((tx) => {
   if (tx.type === "income") {
     return {
       ...tx,
-      amount: Math.round(tx.amount * 1.2),
+      amount: Math.round(tx.amount * 1.65),
+      status: "completed" as const,
     }
   }
 
   if (tx.type === "expense") {
     return {
       ...tx,
-      amount: Math.round(tx.amount * 0.8),
+      amount: Math.round(tx.amount * 0.38),
+      status: "completed" as const,
     }
   }
 

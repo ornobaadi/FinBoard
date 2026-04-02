@@ -1,4 +1,5 @@
 import { InsightSummary, MonthlyStat, Transaction } from "@/types"
+import { formatCurrency } from "@/lib/utils"
 
 const monthLabel = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -196,8 +197,8 @@ export function getSummaryInsights(transactions: Transaction[]): InsightSummary 
   const narratives = {
     trend:
       expenseChangePercent > 0
-        ? `Expenses are up ${expenseChangePercent.toFixed(1)}% vs last month; projected spend is ${Math.round(projectedExpense).toLocaleString()} BDT.`
-        : `Expenses are down ${Math.abs(expenseChangePercent).toFixed(1)}% vs last month; current run-rate projects ${Math.round(projectedExpense).toLocaleString()} BDT.`,
+        ? `Expenses are up ${expenseChangePercent.toFixed(1)}% vs last month; projected spend is ${formatCurrency(Math.round(projectedExpense))}.`
+        : `Expenses are down ${Math.abs(expenseChangePercent).toFixed(1)}% vs last month; current run-rate projects ${formatCurrency(Math.round(projectedExpense))}.`,
     category:
       topCategories.length > 0
         ? `${topCategories[0].name} leads this month at ${topCategories[0].sharePercent.toFixed(1)}% of expenses. Top 3 categories contribute ${topThreeShare.toFixed(1)}% overall.`

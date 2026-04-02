@@ -16,10 +16,10 @@ export function Sidebar() {
 
   return (
     <aside className="sticky top-0 hidden h-dvh w-72 shrink-0 border-r border-border/70 bg-sidebar px-4 py-5 lg:flex lg:flex-col">
-      <div className="rounded-4xl bg-gradient-to-br from-emerald-500/90 via-teal-500/80 to-cyan-500/80 p-[1px] shadow-lg shadow-emerald-900/15">
+      <div className="rounded-4xl bg-linear-to-br from-emerald-500/90 via-teal-500/80 to-cyan-500/80 p-[1px] shadow-lg shadow-emerald-900/15">
         <div className="rounded-[calc(var(--radius-4xl)-1px)] bg-card/95 p-4 backdrop-blur-sm">
           <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">Finboard</p>
-          <h1 className="mt-2 font-heading text-2xl font-semibold">Personal Finance HQ</h1>
+          <h1 className="mt-2 font-heading text-2xl font-semibold">Personal Finance</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Track income, control spending, and manage your cashflow with role-based controls.
           </p>

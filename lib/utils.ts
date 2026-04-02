@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-BD", {
     style: "currency",
-    currency: "BDT",
+    currency: "USD",
     maximumFractionDigits: 0,
   }).format(amount)
 }

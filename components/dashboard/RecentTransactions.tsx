@@ -22,7 +22,7 @@ export function RecentTransactions({ data }: RecentTransactionsProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-2.5 pt-3.5 pb-4">
-        {data.map((tx) => (
+        {data.length ? data.map((tx) => (
           <div
             key={tx.id}
             className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-border/70 bg-background/80 px-4 py-3"
@@ -37,7 +37,11 @@ export function RecentTransactions({ data }: RecentTransactionsProps) {
               <p className="min-w-28 text-right font-semibold tabular-nums">{formatCurrency(tx.amount)}</p>
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="rounded-3xl border border-dashed border-border/70 bg-background/50 px-4 py-5 text-sm text-muted-foreground">
+            No transactions match your current search.
+          </div>
+        )}
       </CardContent>
     </Card>
   )

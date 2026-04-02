@@ -20,6 +20,8 @@ import { Transaction } from "@/types"
 export default function TransactionsPage() {
   const role = useAppStore((state) => state.role)
   const transactions = useAppStore((state) => state.transactions)
+  const filters = useAppStore((state) => state.filters)
+  const setFilter = useAppStore((state) => state.setFilter)
   const clearFilters = useAppStore((state) => state.clearFilters)
   const addTransaction = useAppStore((state) => state.addTransaction)
   const updateTransaction = useAppStore((state) => state.updateTransaction)
@@ -134,11 +136,16 @@ export default function TransactionsPage() {
         <Sidebar />
 
         <div className="min-w-0 flex-1">
-          <Header eyebrow="Transactions" title="Transaction Workspace" searchPlaceholder="Search by description..." />
+          <Header
+            eyebrow="Transactions"
+            title="Transaction Workspace"
+            searchPlaceholder="Search by description..."
+            searchValue={filters.search}
+            onSearchChange={(value) => setFilter("search", value)}
+            controls={<DemoControls compact />}
+          />
 
           <main className="space-y-4 px-4 pt-1 pb-28 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
-            <DemoControls />
-
             <section className="space-y-4">
               <div className="rounded-4xl border border-border/70 bg-card/70 p-3.5 sm:p-4">
                 <div className="flex items-center justify-between gap-3">

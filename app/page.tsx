@@ -51,6 +51,8 @@ const RecentTransactions = dynamic(
 export default function Page() {
   const stats = useDashboardStats()
   const transactions = useAppStore((state) => state.transactions)
+  const filters = useAppStore((state) => state.filters)
+  const setFilter = useAppStore((state) => state.setFilter)
   const shouldAnimate = useFirstLoadStagger()
 
   const pendingCount = useMemo(
@@ -97,6 +99,19 @@ export default function Page() {
     [stats]
   )
 
+  const recentTransactions = useMemo(() => {
+    const query = filters.search.trim().toLowerCase()
+
+    if (!query) {
+      return stats.recentTransactions
+    }
+
+    return [...transactions]
+      .filter((tx) => tx.description.toLowerCase().includes(query))
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 6)
+  }, [filters.search, stats.recentTransactions, transactions])
+
   return (
     <div className="relative min-h-dvh bg-linear-to-br from-emerald-50/80 via-background to-cyan-50/40 dark:from-emerald-950/30 dark:via-background dark:to-cyan-950/20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background:radial-gradient(circle_at_20%_10%,rgba(16,185,129,0.12),transparent_35%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.1),transparent_30%),radial-gradient(circle_at_30%_90%,rgba(6,182,212,0.08),transparent_25%)]" />
@@ -105,11 +120,16 @@ export default function Page() {
         <Sidebar />
 
         <div className="min-w-0 flex-1">
-          <Header eyebrow="Dashboard" title="Finance Command Center" />
+          <Header
+            eyebrow="Dashboard"
+            title="Finance Command Center"
+            searchPlaceholder="Search transactions..."
+            searchValue={filters.search}
+            onSearchChange={(value) => setFilter("search", value)}
+            controls={<DemoControls compact />}
+          />
 
           <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
-            <DemoControls />
-
             <section
               id="overview"
               className="scroll-mt-24 grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4"
@@ -155,7 +175,7 @@ export default function Page() {
                   monthLabel={stats.insights.currentMonthLabel}
                   narrative={stats.insights.narratives.category}
                 />
-                <RecentTransactions data={stats.recentTransactions} />
+                <RecentTransactions data={recentTransactions} />
               </div>
             </section>
           </main>

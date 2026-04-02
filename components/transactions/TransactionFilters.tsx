@@ -19,7 +19,7 @@ interface TransactionFiltersProps {
   canExport?: boolean
 }
 
-const HIGH_EXPENSE_MIN = 10000
+const HIGH_EXPENSE_MIN = 120
 
 export function TransactionFilters({ onExportCsv, canExport = false }: TransactionFiltersProps) {
   const filters = useAppStore((state) => state.filters)

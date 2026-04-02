@@ -4,7 +4,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_001",
     description: "Monthly salary",
-    amount: 165000,
+    amount: 1500,
     type: "income",
     category: "Salary",
     date: "2026-04-01",
@@ -13,7 +13,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_002",
     description: "Apartment rent",
-    amount: 42000,
+    amount: 382,
     type: "expense",
     category: "Housing",
     date: "2026-04-03",
@@ -22,7 +22,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_003",
     description: "Weekly groceries",
-    amount: 7600,
+    amount: 69,
     type: "expense",
     category: "Food & Groceries",
     date: "2026-04-05",
@@ -31,7 +31,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_004",
     description: "Client project payout",
-    amount: 58000,
+    amount: 527,
     type: "income",
     category: "Freelance",
     date: "2026-04-07",
@@ -40,7 +40,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_005",
     description: "Electricity bill",
-    amount: 5200,
+    amount: 47,
     type: "expense",
     category: "Utilities",
     date: "2026-04-09",
@@ -49,7 +49,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_006",
     description: "Ride share passes",
-    amount: 2800,
+    amount: 25,
     type: "expense",
     category: "Transport",
     date: "2026-04-10",
@@ -58,7 +58,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_007",
     description: "Stock dividend",
-    amount: 12000,
+    amount: 109,
     type: "income",
     category: "Investment",
     date: "2026-03-04",
@@ -67,7 +67,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_008",
     description: "Monthly salary",
-    amount: 162000,
+    amount: 1473,
     type: "income",
     category: "Salary",
     date: "2026-03-01",
@@ -76,7 +76,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_009",
     description: "New monitor",
-    amount: 18500,
+    amount: 168,
     type: "expense",
     category: "Shopping",
     date: "2026-03-08",
@@ -85,7 +85,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_010",
     description: "Dinner with team",
-    amount: 6400,
+    amount: 58,
     type: "expense",
     category: "Entertainment",
     date: "2026-03-13",
@@ -94,7 +94,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_011",
     description: "Gym and health checkup",
-    amount: 7900,
+    amount: 72,
     type: "expense",
     category: "Health",
     date: "2026-03-18",
@@ -103,7 +103,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_012",
     description: "Apartment rent",
-    amount: 42000,
+    amount: 382,
     type: "expense",
     category: "Housing",
     date: "2026-03-03",
@@ -112,7 +112,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_013",
     description: "Online course payment",
-    amount: 4500,
+    amount: 41,
     type: "expense",
     category: "Education",
     date: "2026-03-22",
@@ -121,7 +121,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_014",
     description: "Monthly salary",
-    amount: 158000,
+    amount: 1436,
     type: "income",
     category: "Salary",
     date: "2026-02-01",
@@ -130,7 +130,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_015",
     description: "Freelance design sprint",
-    amount: 36000,
+    amount: 327,
     type: "income",
     category: "Freelance",
     date: "2026-02-10",
@@ -139,7 +139,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_016",
     description: "Groceries",
-    amount: 6200,
+    amount: 56,
     type: "expense",
     category: "Food & Groceries",
     date: "2026-02-07",
@@ -148,7 +148,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_017",
     description: "Transport pass",
-    amount: 2400,
+    amount: 22,
     type: "expense",
     category: "Transport",
     date: "2026-02-11",
@@ -157,7 +157,7 @@ export const transactions: Transaction[] = [
   {
     id: "txn_018",
     description: "Water and gas bill",
-    amount: 3900,
+    amount: 35,
     type: "expense",
     category: "Utilities",
     date: "2026-02-17",

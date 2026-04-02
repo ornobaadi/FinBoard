@@ -11,11 +11,11 @@ Finboard is a role-based personal finance dashboard built with Next.js App Route
 
 ### Dashboard Preview
 
-![Dashboard Preview](./public/screenshots/dashboard-preview.svg)
+![Dashboard Preview](./public/screenshots/finboard-dashboard.png)
 
 ### Transactions Preview
 
-![Transactions Preview](./public/screenshots/transactions-preview.svg)
+![Transactions Preview](./public/screenshots/finboard-transactions.png)
 
 ## Core Features
 
@@ -140,7 +140,7 @@ Open `http://localhost:3000`.
 
 - Data is local and persisted in browser storage.
 - Role toggle is for demonstration; real authentication is out of scope.
-- Currency format is BDT.
+- Currency format is USD.
 - Charts and summaries are computed client-side from local state.
 
 ## Known Limitations
