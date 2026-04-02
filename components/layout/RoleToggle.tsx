@@ -14,11 +14,12 @@ import { useAppStore } from "@/store/useAppStore"
 export function RoleToggle() {
   const role = useAppStore((state) => state.role)
   const setRole = useAppStore((state) => state.setRole)
+  const roleLabel = role === "admin" ? "Admin" : "Viewer"
 
   return (
     <Select value={role} onValueChange={(value) => setRole(value as "viewer" | "admin")}>
       <SelectTrigger className="w-[156px] bg-card" aria-label="Select user role">
-        <SelectValue placeholder="Role" />
+        <SelectValue placeholder="Role">{roleLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="viewer">

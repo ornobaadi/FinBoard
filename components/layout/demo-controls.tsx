@@ -23,6 +23,8 @@ export function DemoControls() {
   const scenario = useAppStore((state) => state.scenario)
   const loadScenario = useAppStore((state) => state.loadScenario)
   const resetDemoData = useAppStore((state) => state.resetDemoData)
+  const selectedScenarioLabel =
+    scenarioOptions.find((option) => option.key === scenario)?.label ?? "Scenario"
 
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-3xl border border-border/70 bg-card/70 p-2.5">
@@ -31,7 +33,7 @@ export function DemoControls() {
         onValueChange={(value) => loadScenario(value as DemoScenarioKey)}
       >
         <SelectTrigger className="h-8 min-w-[150px] bg-background" aria-label="Select demo scenario">
-          <SelectValue placeholder="Scenario" />
+          <SelectValue placeholder="Scenario">{selectedScenarioLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {scenarioOptions.map((option) => (

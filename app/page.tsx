@@ -41,13 +41,6 @@ const FinancePulseCard = dynamic(
   }
 )
 
-const TopCategoriesCard = dynamic(
-  () => import("@/components/dashboard/TopCategoriesCard").then((mod) => mod.TopCategoriesCard),
-  {
-    loading: () => <div className="h-52 rounded-4xl border border-border/70 bg-card/70" />,
-  }
-)
-
 const RecentTransactions = dynamic(
   () => import("@/components/dashboard/RecentTransactions").then((mod) => mod.RecentTransactions),
   {
@@ -140,10 +133,8 @@ export default function Page() {
                 <InsightsPanel
                   monthLabel={stats.insights.currentMonthLabel}
                   topCategory={stats.insights.topCategory}
-                  burnRate={stats.insights.burnRate}
                   budgetHealth={stats.insights.budgetHealth}
                   expenseChangePercent={stats.insights.expenseChangePercent}
-                  incomeExpenseRatio={stats.insights.incomeExpenseRatio}
                 />
                 <MonthlyTrendChart
                   data={stats.insights.monthlyTrend}
@@ -163,10 +154,6 @@ export default function Page() {
                   data={stats.insights.categoryBreakdown}
                   monthLabel={stats.insights.currentMonthLabel}
                   narrative={stats.insights.narratives.category}
-                />
-                <TopCategoriesCard
-                  monthLabel={stats.insights.currentMonthLabel}
-                  data={stats.insights.topCategories}
                 />
                 <RecentTransactions data={stats.recentTransactions} />
               </div>

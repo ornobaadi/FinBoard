@@ -64,6 +64,8 @@ export function TransactionModal({
   const [error, setError] = useState("")
 
   const isEdit = useMemo(() => Boolean(initialData), [initialData])
+  const typeLabel = form.type === "income" ? "Income" : "Expense"
+  const statusLabel = form.status === "completed" ? "Completed" : "Pending"
 
   const handleSubmit = () => {
     if (!form.description.trim()) {
@@ -135,7 +137,7 @@ export function TransactionModal({
                 }
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Type" />
+                  <SelectValue placeholder="Type">{typeLabel}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="income">Income</SelectItem>
@@ -190,7 +192,7 @@ export function TransactionModal({
               }
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder="Status">{statusLabel}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="completed">Completed</SelectItem>

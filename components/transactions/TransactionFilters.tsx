@@ -27,6 +27,32 @@ export function TransactionFilters({ onExportCsv, canExport = false }: Transacti
   const setFilters = useAppStore((state) => state.setFilters)
   const clearFilters = useAppStore((state) => state.clearFilters)
 
+  const typeLabel =
+    filters.type === "all"
+      ? "All Types"
+      : filters.type === "income"
+        ? "Income"
+        : "Expense"
+
+  const statusLabel =
+    filters.status === "all"
+      ? "All Status"
+      : filters.status === "completed"
+        ? "Completed"
+        : "Pending"
+
+  const categoryLabel =
+    filters.category === "all" ? "All Categories" : filters.category
+
+  const sortLabel =
+    filters.sortBy === "date" && filters.sortDirection === "desc"
+      ? "Newest"
+      : filters.sortBy === "date" && filters.sortDirection === "asc"
+        ? "Oldest"
+        : filters.sortBy === "amount" && filters.sortDirection === "desc"
+          ? "Highest Amount"
+          : "Lowest Amount"
+
   const applyQuickView = (view: "thisMonth" | "pending" | "highExpense") => {
     const todayMonth = new Date().toISOString().slice(0, 7)
 
@@ -109,10 +135,10 @@ export function TransactionFilters({ onExportCsv, canExport = false }: Transacti
         onValueChange={(value) => setFilter("type", value as "all" | "income" | "expense")}
       >
         <SelectTrigger id="tx-type-filter" className="w-full bg-background" aria-label="Filter by type">
-          <SelectValue placeholder="Type" />
+          <SelectValue placeholder="Type">{typeLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All types</SelectItem>
+          <SelectItem value="all">All Types</SelectItem>
           <SelectItem value="income">Income</SelectItem>
           <SelectItem value="expense">Expense</SelectItem>
         </SelectContent>
@@ -125,10 +151,10 @@ export function TransactionFilters({ onExportCsv, canExport = false }: Transacti
         }
       >
         <SelectTrigger className="w-full bg-background" aria-label="Filter by status">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder="Status">{statusLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All status</SelectItem>
+          <SelectItem value="all">All Status</SelectItem>
           <SelectItem value="completed">Completed</SelectItem>
           <SelectItem value="pending">Pending</SelectItem>
         </SelectContent>
@@ -139,10 +165,10 @@ export function TransactionFilters({ onExportCsv, canExport = false }: Transacti
         onValueChange={(value) => setFilter("category", value ?? "all")}
       >
         <SelectTrigger className="w-full bg-background" aria-label="Filter by category">
-          <SelectValue placeholder="Category" />
+          <SelectValue placeholder="Category">{categoryLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All categories</SelectItem>
+          <SelectItem value="all">All Categories</SelectItem>
           {categories.map((category) => (
             <SelectItem key={category} value={category}>
               {category}
@@ -166,7 +192,7 @@ export function TransactionFilters({ onExportCsv, canExport = false }: Transacti
         }
       >
         <SelectTrigger className="w-full bg-background" aria-label="Quick sort preset">
-          <SelectValue placeholder="Sort" />
+          <SelectValue placeholder="Sort">{sortLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="newest">Newest</SelectItem>

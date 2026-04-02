@@ -151,7 +151,7 @@ export function useDashboardStats() {
       insights,
       recentTransactions: [...transactions]
         .sort((a, b) => b.date.localeCompare(a.date))
-        .slice(0, 5),
+        .slice(0, 6),
     }
   }, [transactions])
 }
