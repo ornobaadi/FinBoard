@@ -8,9 +8,42 @@ import { formatCurrency } from "@/lib/utils"
 
 interface CategoryChartProps {
   data: Array<{ category: string; amount: number }>
+  monthLabel: string
+  narrative: string
 }
 
-export function CategoryChart({ data }: CategoryChartProps) {
+function CategoryTooltip({
+  active,
+  payload,
+  monthLabel,
+  total,
+}: {
+  active?: boolean
+  payload?: Array<{ payload: { category: string; amount: number } }>
+  monthLabel: string
+  total: number
+}) {
+  if (!active || !payload?.length) {
+    return null
+  }
+
+  const row = payload[0]?.payload as { category: string; amount: number }
+  const amount = Number(row?.amount ?? 0)
+  const share = total ? (amount / total) * 100 : 0
+
+  return (
+    <div className="rounded-2xl border border-border/80 bg-card/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
+      <p className="font-semibold text-foreground">{row.category}</p>
+      <p className="mt-1 text-muted-foreground">{monthLabel}</p>
+      <p className="mt-1 text-sm font-semibold tabular-nums text-foreground">{formatCurrency(amount)}</p>
+      <p className="text-muted-foreground tabular-nums">{share.toFixed(1)}% of monthly spend</p>
+    </div>
+  )
+}
+
+export function CategoryChart({ data, monthLabel, narrative }: CategoryChartProps) {
+  const total = data.reduce((sum, row) => sum + row.amount, 0)
+
   return (
     <Card className="gap-0 bg-card/80 py-0 shadow-sm">
       <CardHeader className="pt-4 pb-2">
@@ -33,7 +66,10 @@ export function CategoryChart({ data }: CategoryChartProps) {
                   <Cell key={`${entry.category}-${index}`} fill={getCategoryChartColor(entry.category, index)} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => formatCurrency(Number(value ?? 0))} />
+              <Tooltip
+                cursor={false}
+                content={<CategoryTooltip monthLabel={monthLabel} total={total} />}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -52,6 +88,10 @@ export function CategoryChart({ data }: CategoryChartProps) {
               <span className="font-semibold tabular-nums">{formatCurrency(entry.amount)}</span>
             </div>
           ))}
+
+          <p className="rounded-3xl border border-dashed border-border/70 bg-background/50 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+            {narrative}
+          </p>
         </div>
       </CardContent>
     </Card>

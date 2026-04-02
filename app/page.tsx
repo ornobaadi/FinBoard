@@ -15,6 +15,7 @@ import { InsightsPanel } from "@/components/dashboard/InsightsPanel"
 import { MonthlyTrendChart } from "@/components/dashboard/MonthlyTrendChart"
 import { RecentTransactions } from "@/components/dashboard/RecentTransactions"
 import { SummaryCard } from "@/components/dashboard/SummaryCard"
+import { TopCategoriesCard } from "@/components/dashboard/TopCategoriesCard"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { useFirstLoadStagger } from "@/hooks/use-first-load-stagger"
@@ -70,7 +71,7 @@ export default function Page() {
   )
 
   return (
-    <div className="relative min-h-dvh bg-gradient-to-br from-emerald-50/80 via-background to-cyan-50/40 dark:from-emerald-950/30 dark:via-background dark:to-cyan-950/20">
+    <div className="relative min-h-dvh bg-linear-to-br from-emerald-50/80 via-background to-cyan-50/40 dark:from-emerald-950/30 dark:via-background dark:to-cyan-950/20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background:radial-gradient(circle_at_20%_10%,rgba(16,185,129,0.12),transparent_35%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.1),transparent_30%),radial-gradient(circle_at_30%_90%,rgba(6,182,212,0.08),transparent_25%)]" />
 
       <div className="relative flex min-h-dvh">
@@ -98,11 +99,18 @@ export default function Page() {
             <section className="grid gap-3.5 xl:grid-cols-[1.3fr_1fr] xl:gap-4">
               <div className="space-y-3.5">
                 <InsightsPanel
+                  monthLabel={stats.insights.currentMonthLabel}
                   topCategory={stats.insights.topCategory}
+                  burnRate={stats.insights.burnRate}
+                  budgetHealth={stats.insights.budgetHealth}
                   expenseChangePercent={stats.insights.expenseChangePercent}
                   incomeExpenseRatio={stats.insights.incomeExpenseRatio}
                 />
-                <MonthlyTrendChart data={stats.insights.monthlyTrend} />
+                <MonthlyTrendChart
+                  data={stats.insights.monthlyTrend}
+                  narrative={stats.insights.narratives.trend}
+                  anomaly={stats.insights.anomaly}
+                />
                 <FinancePulseCard
                   netBalance={stats.totals.net}
                   expenseChangePercent={stats.insights.expenseChangePercent}
@@ -112,7 +120,15 @@ export default function Page() {
               </div>
 
               <div className="space-y-3.5">
-                <CategoryChart data={stats.insights.categoryBreakdown} />
+                <CategoryChart
+                  data={stats.insights.categoryBreakdown}
+                  monthLabel={stats.insights.currentMonthLabel}
+                  narrative={stats.insights.narratives.category}
+                />
+                <TopCategoriesCard
+                  monthLabel={stats.insights.currentMonthLabel}
+                  data={stats.insights.topCategories}
+                />
                 <RecentTransactions data={stats.recentTransactions} />
               </div>
             </section>
