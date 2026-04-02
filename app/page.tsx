@@ -10,16 +10,31 @@ import {
 } from "lucide-react"
 
 import { CategoryChart } from "@/components/dashboard/CategoryChart"
+import { FinancePulseCard } from "@/components/dashboard/FinancePulseCard"
 import { InsightsPanel } from "@/components/dashboard/InsightsPanel"
 import { MonthlyTrendChart } from "@/components/dashboard/MonthlyTrendChart"
 import { RecentTransactions } from "@/components/dashboard/RecentTransactions"
 import { SummaryCard } from "@/components/dashboard/SummaryCard"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
-import { useDashboardStats } from "@/store/useAppStore"
+import { useAppStore, useDashboardStats } from "@/store/useAppStore"
 
 export default function Page() {
   const stats = useDashboardStats()
+  const transactions = useAppStore((state) => state.transactions)
+
+  const pendingCount = useMemo(
+    () => transactions.filter((tx) => tx.status === "pending").length,
+    [transactions]
+  )
+
+  const savingsRate = useMemo(() => {
+    if (!stats.totals.income) {
+      return 0
+    }
+
+    return (stats.totals.net / stats.totals.income) * 100
+  }, [stats.totals.income, stats.totals.net])
 
   const summaryCards = useMemo(
     () => [
@@ -62,7 +77,7 @@ export default function Page() {
         <div className="min-w-0 flex-1">
           <Header eyebrow="Dashboard" title="Finance Command Center" />
 
-          <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-6">
+          <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
             <section id="overview" className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
               {summaryCards.map((card, index) => (
                 <div key={card.title} className={`fx-rise ${index > 0 ? `fx-rise-delay-${Math.min(index, 3)}` : ""}`}>
@@ -71,26 +86,24 @@ export default function Page() {
               ))}
             </section>
 
-            <section className="grid gap-3.5 xl:grid-cols-[1.25fr_1fr] xl:gap-4">
+            <section className="grid gap-3.5 xl:grid-cols-[1.3fr_1fr] xl:gap-4">
               <div className="space-y-3.5">
                 <InsightsPanel
                   topCategory={stats.insights.topCategory}
                   expenseChangePercent={stats.insights.expenseChangePercent}
                   incomeExpenseRatio={stats.insights.incomeExpenseRatio}
                 />
+                <MonthlyTrendChart data={stats.insights.monthlyTrend} />
+                <FinancePulseCard
+                  netBalance={stats.totals.net}
+                  expenseChangePercent={stats.insights.expenseChangePercent}
+                  savingsRate={savingsRate}
+                  pendingCount={pendingCount}
+                />
               </div>
 
               <div className="space-y-3.5">
                 <CategoryChart data={stats.insights.categoryBreakdown} />
-              </div>
-            </section>
-
-            <section className="grid gap-3.5 xl:grid-cols-[1.25fr_1fr] xl:gap-4">
-              <div className="space-y-3.5">
-                <MonthlyTrendChart data={stats.insights.monthlyTrend} />
-              </div>
-
-              <div className="space-y-3.5">
                 <RecentTransactions data={stats.recentTransactions} />
               </div>
             </section>

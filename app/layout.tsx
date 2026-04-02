@@ -1,11 +1,10 @@
-import { Geist_Mono, Manrope, Sora } from "next/font/google"
+import { Geist_Mono, Manrope } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
-const sora = Sora({ subsets: ["latin"], variable: "--font-display" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -25,7 +24,6 @@ export default function RootLayout({
         "antialiased",
         fontMono.variable,
         manrope.variable,
-        sora.variable,
         "font-sans"
       )}
     >

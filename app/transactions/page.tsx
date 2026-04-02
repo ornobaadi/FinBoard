@@ -42,7 +42,7 @@ export default function TransactionsPage() {
         <div className="min-w-0 flex-1">
           <Header eyebrow="Transactions" title="Transaction Workspace" searchPlaceholder="Search by description..." />
 
-          <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
+          <main className="space-y-4 px-4 pt-1 pb-28 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
             <section className="space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <CardTitle className="text-xl">Manage Transactions</CardTitle>

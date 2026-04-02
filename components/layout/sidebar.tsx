@@ -29,7 +29,9 @@ export function Sidebar() {
       <nav className="mt-7 grid gap-1.5">
         {navItems.map((item) => {
           const Icon = item.icon
-          const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
+          const isActive = item.href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(item.href)
 
           return (
             <Link
