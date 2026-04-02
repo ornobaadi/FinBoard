@@ -5,6 +5,7 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { ChevronDown, LayoutDashboard, Plus, SlidersHorizontal } from "lucide-react"
 
 import { EmptyState } from "@/components/EmptyState"
+import { DemoControls } from "@/components/layout/demo-controls"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { DeleteConfirmDialog } from "@/components/transactions/DeleteConfirmDialog"
@@ -136,6 +137,8 @@ export default function TransactionsPage() {
           <Header eyebrow="Transactions" title="Transaction Workspace" searchPlaceholder="Search by description..." />
 
           <main className="space-y-4 px-4 pt-1 pb-28 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
+            <DemoControls />
+
             <section className="space-y-4">
               <div className="rounded-4xl border border-border/70 bg-card/70 p-3.5 sm:p-4">
                 <div className="flex items-center justify-between gap-3">

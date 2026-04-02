@@ -2,6 +2,7 @@ export type Role = "viewer" | "admin"
 
 export type TransactionType = "income" | "expense"
 export type TransactionStatus = "completed" | "pending"
+export type DemoScenarioKey = "balanced" | "overspending" | "highSavings"
 
 export interface Transaction {
   id: string

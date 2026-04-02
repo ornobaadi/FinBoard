@@ -1,20 +1,25 @@
 "use client"
 
+import { useMemo } from "react"
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 
-import { transactions as initialTransactions } from "@/data/transactions"
+import { getScenarioTransactions, getSeedTransactions } from "@/data/scenarios"
 import { getCurrentMonthKey, getMonthlyTotals, getSummaryInsights } from "@/lib/insights"
-import { Filters, Role, Transaction } from "@/types"
+import { filterAndSortTransactions } from "@/lib/transactions-query"
+import { DemoScenarioKey, Filters, Role, Transaction } from "@/types"
 
 interface AppState {
   transactions: Transaction[]
+  scenario: DemoScenarioKey
   role: Role
   filters: Filters
   setRole: (role: Role) => void
   setFilter: <K extends keyof Filters>(key: K, value: Filters[K]) => void
   setFilters: (updates: Partial<Filters>) => void
   clearFilters: () => void
+  loadScenario: (scenario: DemoScenarioKey) => void
+  resetDemoData: () => void
   addTransaction: (tx: Omit<Transaction, "id">) => void
   updateTransaction: (id: string, updates: Partial<Transaction>) => void
   deleteTransaction: (id: string) => void
@@ -38,7 +43,8 @@ function createTransactionId(items: Transaction[]) {
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-      transactions: initialTransactions,
+      transactions: getSeedTransactions(),
+      scenario: "balanced",
       role: "viewer",
       filters: defaultFilters,
       setRole: (role) => set({ role }),
@@ -57,6 +63,18 @@ export const useAppStore = create<AppState>()(
           },
         })),
       clearFilters: () => set({ filters: defaultFilters }),
+      loadScenario: (scenario) =>
+        set({
+          transactions: getScenarioTransactions(scenario),
+          scenario,
+          filters: defaultFilters,
+        }),
+      resetDemoData: () =>
+        set({
+          transactions: getSeedTransactions(),
+          scenario: "balanced",
+          filters: defaultFilters,
+        }),
       addTransaction: (tx) =>
         set((state) => ({
           transactions: [
@@ -80,6 +98,7 @@ export const useAppStore = create<AppState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         transactions: state.transactions,
+        scenario: state.scenario,
         role: state.role,
       }),
     }
@@ -90,94 +109,49 @@ export function useFilteredTransactions() {
   const transactions = useAppStore((state) => state.transactions)
   const filters = useAppStore((state) => state.filters)
 
-  return transactions
-    .filter((tx) => {
-      if (
-        filters.search &&
-        !tx.description.toLowerCase().includes(filters.search.toLowerCase())
-      ) {
-        return false
-      }
-
-      if (filters.type !== "all" && tx.type !== filters.type) {
-        return false
-      }
-
-      if (filters.status !== "all" && tx.status !== filters.status) {
-        return false
-      }
-
-      if (filters.category !== "all" && tx.category !== filters.category) {
-        return false
-      }
-
-      if (filters.dateRange.from && tx.date < filters.dateRange.from) {
-        return false
-      }
-
-      if (filters.dateRange.to && tx.date > filters.dateRange.to) {
-        return false
-      }
-
-      if (filters.amountRange.min !== null && tx.amount < filters.amountRange.min) {
-        return false
-      }
-
-      if (filters.amountRange.max !== null && tx.amount > filters.amountRange.max) {
-        return false
-      }
-
-      return true
-    })
-    .sort((a, b) => {
-      const direction = filters.sortDirection === "asc" ? 1 : -1
-
-      if (filters.sortBy === "amount") {
-        return (a.amount - b.amount) * direction
-      }
-
-      if (filters.sortBy === "status") {
-        return a.status.localeCompare(b.status) * direction
-      }
-
-      return a.date.localeCompare(b.date) * direction
-    })
+  return useMemo(
+    () => filterAndSortTransactions(transactions, filters),
+    [transactions, filters]
+  )
 }
 
 export function useDashboardStats() {
   const transactions = useAppStore((state) => state.transactions)
-  const currentMonth = getCurrentMonthKey(transactions)
-  const previousMonth = new Date(`${currentMonth}-01`)
-  previousMonth.setMonth(previousMonth.getMonth() - 1)
-  const previousMonthKey = `${previousMonth.getFullYear()}-${String(previousMonth.getMonth() + 1).padStart(2, "0")}`
 
-  const current = getMonthlyTotals(transactions, currentMonth)
-  const previous = getMonthlyTotals(transactions, previousMonthKey)
-  const insights = getSummaryInsights(transactions)
+  return useMemo(() => {
+    const currentMonth = getCurrentMonthKey(transactions)
+    const previousMonth = new Date(`${currentMonth}-01`)
+    previousMonth.setMonth(previousMonth.getMonth() - 1)
+    const previousMonthKey = `${previousMonth.getFullYear()}-${String(previousMonth.getMonth() + 1).padStart(2, "0")}`
 
-  return {
-    currentMonth,
-    totals: {
-      income: current.income,
-      expense: current.expense,
-      net: current.income - current.expense,
-      transactions: current.count,
-    },
-    comparison: {
-      income: previous.income ? ((current.income - previous.income) / previous.income) * 100 : 0,
-      expense: previous.expense ? ((current.expense - previous.expense) / previous.expense) * 100 : 0,
-      net: previous.income - previous.expense
-        ? ((current.income - current.expense - (previous.income - previous.expense)) /
-            (previous.income - previous.expense)) *
-          100
-        : 0,
-      transactions: previous.count
-        ? ((current.count - previous.count) / previous.count) * 100
-        : 0,
-    },
-    insights,
-    recentTransactions: [...transactions]
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 5),
-  }
+    const current = getMonthlyTotals(transactions, currentMonth)
+    const previous = getMonthlyTotals(transactions, previousMonthKey)
+    const insights = getSummaryInsights(transactions)
+
+    return {
+      currentMonth,
+      totals: {
+        income: current.income,
+        expense: current.expense,
+        net: current.income - current.expense,
+        transactions: current.count,
+      },
+      comparison: {
+        income: previous.income ? ((current.income - previous.income) / previous.income) * 100 : 0,
+        expense: previous.expense ? ((current.expense - previous.expense) / previous.expense) * 100 : 0,
+        net: previous.income - previous.expense
+          ? ((current.income - current.expense - (previous.income - previous.expense)) /
+              (previous.income - previous.expense)) *
+            100
+          : 0,
+        transactions: previous.count
+          ? ((current.count - previous.count) / previous.count) * 100
+          : 0,
+      },
+      insights,
+      recentTransactions: [...transactions]
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 5),
+    }
+  }, [transactions])
 }

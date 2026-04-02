@@ -1,5 +1,6 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import Link from "next/link"
 import { useMemo } from "react"
 import {
@@ -11,17 +12,48 @@ import {
   SlidersHorizontal,
 } from "lucide-react"
 
-import { CategoryChart } from "@/components/dashboard/CategoryChart"
-import { FinancePulseCard } from "@/components/dashboard/FinancePulseCard"
 import { InsightsPanel } from "@/components/dashboard/InsightsPanel"
-import { MonthlyTrendChart } from "@/components/dashboard/MonthlyTrendChart"
-import { RecentTransactions } from "@/components/dashboard/RecentTransactions"
 import { SummaryCard } from "@/components/dashboard/SummaryCard"
-import { TopCategoriesCard } from "@/components/dashboard/TopCategoriesCard"
+import { DemoControls } from "@/components/layout/demo-controls"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { useFirstLoadStagger } from "@/hooks/use-first-load-stagger"
 import { useAppStore, useDashboardStats } from "@/store/useAppStore"
+
+const CategoryChart = dynamic(
+  () => import("@/components/dashboard/CategoryChart").then((mod) => mod.CategoryChart),
+  {
+    loading: () => <div className="h-72 rounded-4xl border border-border/70 bg-card/70" />,
+  }
+)
+
+const MonthlyTrendChart = dynamic(
+  () => import("@/components/dashboard/MonthlyTrendChart").then((mod) => mod.MonthlyTrendChart),
+  {
+    loading: () => <div className="h-80 rounded-4xl border border-border/70 bg-card/70" />,
+  }
+)
+
+const FinancePulseCard = dynamic(
+  () => import("@/components/dashboard/FinancePulseCard").then((mod) => mod.FinancePulseCard),
+  {
+    loading: () => <div className="h-48 rounded-4xl border border-border/70 bg-card/70" />,
+  }
+)
+
+const TopCategoriesCard = dynamic(
+  () => import("@/components/dashboard/TopCategoriesCard").then((mod) => mod.TopCategoriesCard),
+  {
+    loading: () => <div className="h-52 rounded-4xl border border-border/70 bg-card/70" />,
+  }
+)
+
+const RecentTransactions = dynamic(
+  () => import("@/components/dashboard/RecentTransactions").then((mod) => mod.RecentTransactions),
+  {
+    loading: () => <div className="h-72 rounded-4xl border border-border/70 bg-card/70" />,
+  }
+)
 
 export default function Page() {
   const stats = useDashboardStats()
@@ -83,6 +115,8 @@ export default function Page() {
           <Header eyebrow="Dashboard" title="Finance Command Center" />
 
           <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
+            <DemoControls />
+
             <section
               id="overview"
               className="scroll-mt-24 grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4"
