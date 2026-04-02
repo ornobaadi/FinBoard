@@ -17,11 +17,13 @@ import { RecentTransactions } from "@/components/dashboard/RecentTransactions"
 import { SummaryCard } from "@/components/dashboard/SummaryCard"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
+import { useFirstLoadStagger } from "@/hooks/use-first-load-stagger"
 import { useAppStore, useDashboardStats } from "@/store/useAppStore"
 
 export default function Page() {
   const stats = useDashboardStats()
   const transactions = useAppStore((state) => state.transactions)
+  const shouldAnimate = useFirstLoadStagger()
 
   const pendingCount = useMemo(
     () => transactions.filter((tx) => tx.status === "pending").length,
@@ -80,7 +82,14 @@ export default function Page() {
           <main className="space-y-4 px-4 pt-1 pb-20 sm:px-6 lg:space-y-5 lg:px-8 lg:pb-8">
             <section id="overview" className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
               {summaryCards.map((card, index) => (
-                <div key={card.title} className={`fx-rise ${index > 0 ? `fx-rise-delay-${Math.min(index, 3)}` : ""}`}>
+                <div
+                  key={card.title}
+                  className={
+                    shouldAnimate
+                      ? `fx-rise ${index > 0 ? `fx-rise-delay-${Math.min(index, 3)}` : ""}`
+                      : ""
+                  }
+                >
                   <SummaryCard {...card} />
                 </div>
               ))}
@@ -110,10 +119,10 @@ export default function Page() {
           </main>
 
           <nav className="fixed right-4 bottom-4 left-4 z-20 grid grid-cols-2 rounded-4xl border border-border/70 bg-card/90 p-2 shadow-sm backdrop-blur supports-[padding:max(0px)]:pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden">
-            <a href="#overview" className="rounded-3xl bg-emerald-500/10 px-3 py-2 text-center text-sm font-medium text-foreground">
+            <a href="#overview" className="rounded-3xl bg-emerald-500/10 px-3 py-2 text-center text-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60">
               Dashboard
             </a>
-            <Link href="/transactions" className="rounded-3xl px-3 py-2 text-center text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground">
+            <Link href="/transactions" className="rounded-3xl px-3 py-2 text-center text-sm font-medium text-muted-foreground hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60">
               Transactions
             </Link>
           </nav>

@@ -1,6 +1,7 @@
 import { ArrowDownLeft, ArrowUpRight, LucideIcon } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAnimatedNumber } from "@/hooks/use-animated-number"
 import { formatCurrency, formatPercent } from "@/lib/utils"
 import { cn } from "@/lib/utils"
 
@@ -20,6 +21,8 @@ export function SummaryCard({
   icon: Icon,
 }: SummaryCardProps) {
   const positive = changePercent >= 0
+  const animatedValue = useAnimatedNumber(value)
+  const roundedDisplay = Math.round(animatedValue)
 
   return (
     <Card className="gap-0 bg-card/80 py-0 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -31,7 +34,7 @@ export function SummaryCard({
           </span>
         </CardDescription>
         <CardTitle className="text-[2rem] leading-tight font-semibold tabular-nums">
-          {isCurrency ? formatCurrency(value) : value.toLocaleString()}
+          {isCurrency ? formatCurrency(roundedDisplay) : roundedDisplay.toLocaleString()}
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 pb-4">

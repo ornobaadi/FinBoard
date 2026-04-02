@@ -25,6 +25,8 @@ interface TransactionTableProps {
   onEdit: (tx: Transaction) => void
   onDelete: (tx: Transaction) => void
   onClearFilters: () => void
+  isFiltering?: boolean
+  removingId?: string | null
 }
 
 const PAGE_SIZE = 10
@@ -35,6 +37,8 @@ export function TransactionTable({
   onEdit,
   onDelete,
   onClearFilters,
+  isFiltering = false,
+  removingId = null,
 }: TransactionTableProps) {
   const [page, setPage] = useState(1)
 
@@ -61,7 +65,12 @@ export function TransactionTable({
       <CardHeader className="border-b border-border/70 pt-4 pb-3.5">
         <CardTitle className="text-lg">Transactions</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3.5 pt-3.5 pb-4">
+      <CardContent
+        className={
+          "space-y-3.5 pt-3.5 pb-4 transition-opacity duration-200 " +
+          (isFiltering ? "opacity-75" : "opacity-100")
+        }
+      >
         <Table>
           <TableHeader>
             <TableRow>
@@ -76,7 +85,13 @@ export function TransactionTable({
           </TableHeader>
           <TableBody>
             {paginatedData.map((tx) => (
-              <TableRow key={tx.id}>
+              <TableRow
+                key={tx.id}
+                className={
+                  "transition-all duration-200 " +
+                  (removingId === tx.id ? "scale-[0.98] opacity-0" : "opacity-100")
+                }
+              >
                 <TableCell>{formatDate(tx.date)}</TableCell>
                 <TableCell className="font-medium">{tx.description}</TableCell>
                 <TableCell>
